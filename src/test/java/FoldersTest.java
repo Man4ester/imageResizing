@@ -2,6 +2,7 @@ package test.java;
 
 import main.java.central.blogic.interfaces.IImageResizing;
 import main.java.central.blogic.services.ImageResizing;
+import main.java.central.enums.Strategy;
 
 public class FoldersTest {
 
@@ -16,7 +17,7 @@ public class FoldersTest {
 			for (String file : service.loadFilesPathList(name)) {
 				count++;
 				System.out.println("    file: " + file);
-				service.copyImg(file, 240, 400, "small_", name);
+				service.copyImg(file, 240, 400, "small_", name, Strategy.RESIZE);
 			}
 		}
 		System.out.println("Total number: " + count);

@@ -18,7 +18,7 @@ public class MainTest {
 		IImageResizing service = new ImageResizing();
 		try {
 			BufferedImage img = ImageIO.read(new File(FOLDER + "img_1.jpg"));
-			BufferedImage img2 = service.resize(img, 240, 480);
+			BufferedImage img2 = service.trim(img, 240, 480);
 			ImageIO.write(img2, "jpg", new File(FOLDER + "img_1_small"));
 		} catch (IOException e) {
 			e.printStackTrace();

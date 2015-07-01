@@ -11,16 +11,15 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.sun.prism.Image;
-
 import main.java.central.blogic.interfaces.IImageResizing;
+import main.java.central.enums.Strategy;
 
 public class ImageResizing implements IImageResizing {
 
 	private static final String JPG = "jpg";
 
 	@Override
-	public BufferedImage resize(BufferedImage image, int width, int height) {
+	public BufferedImage trim(BufferedImage image, int width, int height) {
 		int w, h;
 		if (image.getWidth() == width && image.getHeight() == height) {
 			w = image.getWidth();
@@ -88,7 +87,7 @@ public class ImageResizing implements IImageResizing {
 	}
 
 	@Override
-	public void copyImg(String path, int width, int height, String prefix, String dirFolder) {
+	public void copyImg(String path, int width, int height, String prefix, String dirFolder, Strategy strategy) {
 		if (StringUtils.isBlank(path)) {
 			return;
 		}
@@ -104,12 +103,34 @@ public class ImageResizing implements IImageResizing {
 			if (width == 0 || height == 0) {
 				return;
 			}
-			BufferedImage imgDest = resize(img, width, height);
+			BufferedImage imgDest = Strategy.TRIM.equals(strategy) ? trim(img, width, height)
+					: resize(img, width, height);
 			ImageIO.write(imgDest, JPG, new File(dirFolder + File.separator + prefix + file.getName()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public BufferedImage resize(BufferedImage image, int width, int height) {
+		if (image == null) {
+			return null;
+		}
+		BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		Graphics2D graphics2D = null;
+		try {
+			graphics2D = result.createGraphics();
+			graphics2D.fillRect(0, 0, result.getWidth(), result.getHeight());
+			graphics2D.drawImage(
+					image.getScaledInstance(result.getWidth(), result.getHeight(), BufferedImage.SCALE_SMOOTH), 0, 0,
+					null);
+		} finally {
+			if (graphics2D != null) {
+				graphics2D.dispose();
+			}
+		}
+		return result;
 	}
 
 }
